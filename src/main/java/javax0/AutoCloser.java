@@ -19,6 +19,10 @@ public class AutoCloser<T> {
         return new AutoClosableSupplier(closer);
     }
 
+    public AutoClosableSupplier closeWith(Runnable closer){
+        return new AutoClosableSupplier( t -> closer.run());
+    }
+
     public class AutoClosableSupplier implements Supplier<T>, AutoCloseable {
         private final Consumer<Supplier<T>> closer;
 

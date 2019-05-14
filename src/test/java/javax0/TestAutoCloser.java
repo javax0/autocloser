@@ -15,6 +15,16 @@ class TestAutoCloser {
         Assertions.assertFalse(opened);
     }
 
+    @Test
+    void test1() {
+        final var notAu = new NotAutoclosable();
+        try (final var s = AutoCloser.useResource(notAu)
+                .closeWith(notAu::dispose)) {
+            Assertions.assertTrue(opened);
+        }
+        Assertions.assertFalse(opened);
+    }
+
     class NotAutoclosable {
         NotAutoclosable() {
             opened = true;
