@@ -1,15 +1,27 @@
 package javax0;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 class TestAutoCloser {
+    private boolean opened;
 
     @Test
     void test() {
-        final var notAu = NotAutoclosable.open();
-        try (final AutoCloser.Closable s = AutoCloser.use(notAu).withCloser(() -> notAu.dispose())) {
-System.out.println("Open "+notAu.opened);
+        try (final var s = AutoCloser.useResource(new NotAutoclosable())
+                .closeWith(sp -> sp.get().dispose())) {
+            Assertions.assertTrue(opened);
         }
-System.out.println("Open "+notAu.opened);
+        Assertions.assertFalse(opened);
+    }
+
+    class NotAutoclosable {
+        NotAutoclosable() {
+            opened = true;
+        }
+
+        void dispose() {
+            opened = false;
+        }
     }
 }

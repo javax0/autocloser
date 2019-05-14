@@ -1,5 +1,6 @@
 package javax0;
 
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public class AutoCloser<T> {
@@ -10,18 +11,18 @@ public class AutoCloser<T> {
         this.resource = resource;
     }
 
-    public static <T> AutoCloser<T> use(T resource) {
+    public static <T> AutoCloser<T> useResource(T resource) {
         return new AutoCloser<>(resource);
     }
 
-    public Closable withCloser(Runnable closer){
-        return new Closable(closer);
+    public AutoClosableSupplier closeWith(Consumer<Supplier<T>> closer){
+        return new AutoClosableSupplier(closer);
     }
 
-    public class Closable implements Supplier<T>, AutoCloseable {
-        private final Runnable closer;
+    public class AutoClosableSupplier implements Supplier<T>, AutoCloseable {
+        private final Consumer<Supplier<T>> closer;
 
-        private Closable(Runnable closer) {
+        private AutoClosableSupplier(Consumer<Supplier<T>> closer) {
             this.closer = closer;
         }
 
@@ -32,7 +33,7 @@ public class AutoCloser<T> {
 
         @Override
         public void close() {
-            closer.run();
+            closer.accept(this);
         }
 
     }
