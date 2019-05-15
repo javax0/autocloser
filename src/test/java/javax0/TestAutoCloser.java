@@ -9,7 +9,7 @@ class TestAutoCloser {
     @Test
     void test() {
         try (final var s = AutoCloser.useResource(new NotAutoclosable())
-                .closeWith(sp -> sp.get().dispose())) {
+            .closeWith(sp -> sp.get().dispose())) {
             Assertions.assertTrue(opened);
         }
         Assertions.assertFalse(opened);
@@ -19,7 +19,7 @@ class TestAutoCloser {
     void test1() {
         final var notAu = new NotAutoclosable();
         try (final var s = AutoCloser.useResource(notAu)
-                .closeWith(notAu::dispose)) {
+            .closeWith(notAu::dispose)) {
             Assertions.assertTrue(opened);
         }
         Assertions.assertFalse(opened);
